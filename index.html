@@ -1,36 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spelling Fun</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Spelling Fun</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(180deg,#fff6d6,#fffdf7);
+}
+
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.app{
+  width:100vw;
+  height:100vh;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+}
+
+.header{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-bottom:6px;
+}
+
+h1{
+  margin:0;
+  font-size:52px;
+  color:#ff4d5a;
+  text-shadow:0 2px 0 #fff;
+}
+
+.sound-btn{
+  width:68px;
+  height:68px;
+  border:none;
+  border-radius:18px;
+  background:#8d63ff;
+  color:white;
+  font-size:32px;
+  font-weight:bold;
+}
+
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.picture-box{
+  width:100%;
+  max-width:420px;
+  margin:0 auto;
+  background:white;
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.12);
+}
+
+.picture{
+  font-size:150px;
+  text-align:center;
+}
+
+.prompt{
+  text-align:center;
+  font-size:34px;
+  font-weight:bold;
+  margin:8px 0;
+}
+
+.answer{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  min-height:70px;
+}
+
+.slot{
+  width:58px;
+  height:72px;
+  border-radius:16px;
+  background:white;
+  border:4px solid #d9dfeb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+  font-weight:bold;
+  position:relative;
+}
+
+.slot:empty::after{
+  content:"";
+  position:absolute;
+  bottom:12px;
+  width:28px;
+  height:5px;
+  background:#333;
+  border-radius:8px;
+}
+
+.keyboard{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:4px;
+}
+
+.keyboard-row{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+}
+
+.key{
+  flex:1;
+  max-width:76px;
+  min-height:58px;
+  border:none;
+  border-radius:14px;
+  color:white;
+  font-size:30px;
+  font-weight:bold;
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,0.2);
+}
+
+.key:nth-child(7n+1){background:#ff5d5d;}
+.key:nth-child(7n+2){background:#ff9838;}
+.key:nth-child(7n+3){background:#ffc93d;}
+.key:nth-child(7n+4){background:#52c95a;}
+.key:nth-child(7n+5){background:#45a2ff;}
+.key:nth-child(7n+6){background:#8a63ff;}
+.key:nth-child(7n){background:#ff69a6;}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  margin-top:6px;
+}
+
+.control-btn{
+  min-width:180px;
+  min-height:64px;
+  border:none;
+  border-radius:18px;
+  color:white;
+  font-size:30px;
+  font-weight:bold;
+}
+
+.clear-btn{background:#8a63ff;}
+.next-btn{background:#55c84b;}
+
+.message{
+  text-align:center;
+  font-size:32px;
+  font-weight:bold;
+  min-height:40px;
+}
+
+.correct{color:#159c34;}
+.try{color:#e67a00;}
+
+@media (max-width: 900px){
+  h1{font-size:42px;}
+  .picture{font-size:120px;}
+  .key{
+    min-height:52px;
+    font-size:24px;
+  }
+}
+
+</style>
 </head>
+
 <body>
-  <main class="app">
-    <div class="top-row">
-      <button id="soundBtn" class="sound-btn" aria-label="Hear the word">🔊</button>
-      <h1><span>⭐</span> Spelling Fun <span>⭐</span></h1>
-      <div class="score">⭐ <span id="scoreText">1 / 8</span></div>
+
+<div class="app">
+
+  <div class="header">
+    <button class="sound-btn" id="soundBtn">🔊</button>
+    <h1>⭐ Spelling Fun ⭐</h1>
+  </div>
+
+  <div class="main">
+
+    <div class="picture-box">
+      <div class="picture" id="picture">🍎</div>
     </div>
 
-    <section class="card">
-      <div id="picture" class="picture" aria-label="Object picture">🍎</div>
-      <p class="prompt">Spell the word</p>
+    <div class="prompt">Spell the word</div>
 
-      <div id="answerSlots" class="answer-slots" aria-label="Spelling blanks"></div>
+    <div class="answer" id="answer"></div>
 
-      <div id="keyboard" class="keyboard" aria-label="Touch keyboard"></div>
+    <div class="message" id="message"></div>
 
-      <p id="message" class="message" aria-live="polite"></p>
+    <div class="keyboard" id="keyboard"></div>
 
-      <div class="controls">
-        <button id="clearBtn" class="clear-btn">🗑️ Clear</button>
-        <button id="nextBtn" class="next-btn">➜ Next</button>
-      </div>
-    </section>
-  </main>
+    <div class="controls">
+      <button class="control-btn clear-btn" id="clearBtn">Clear</button>
+      <button class="control-btn next-btn" id="nextBtn">Next</button>
+    </div>
 
-  <script src="app.js"></script>
+  </div>
+</div>
+
+<script>
+
+const words = [
+  { word: "APPLE", picture: "🍎" },
+  { word: "SHOES", picture: "👞👟" },
+  { word: "BOAT", picture: "🚤" },
+  { word: "ORANGE", picture: "🍊" },
+  { word: "FLAMINGO", picture: "🦩" },
+  { word: "AIRPLANE", picture: "✈️" },
+  { word: "BUS", picture: "🚌" },
+  { word: "CAR", picture: "🚗" },
+  { word: "BOOK", picture: "📘" },
+  { word: "PHONE", picture: "📱" },
+  { word: "TABLET", picture: "📲" },
+  { word: "FRIES", picture: "🍟" },
+  { word: "GRAPES", picture: "🍇" },
+  { word: "COAT", picture: "🧥" },
+  { word: "YES", picture: "👍" },
+  { word: "NO", picture: "👎" },
+  { word: "TRAIN", picture: "🚆" },
+  { word: "PENGUIN", picture: "🐧" },
+  { word: "TREE", picture: "🌳" },
+  { word: "BEE", picture: "🐝" },
+  { word: "BIRD", picture: "🐦" },
+  { word: "SCOOTER", picture: "🛴" },
+  { word: "HELMET", picture: "🚴🪖" }
+];
+
+let current = 0;
+let typed = "";
+
+const answer = document.getElementById("answer");
+const keyboard = document.getElementById("keyboard");
+const picture = document.getElementById("picture");
+const message = document.getElementById("message");
+
+function currentWord(){
+  return words[current].word;
+}
+
+function drawSlots(){
+  answer.innerHTML = "";
+  currentWord().split("").forEach((_,i)=>{
+    const div = document.createElement("div");
+    div.className = "slot";
+    div.textContent = typed[i] || "";
+    answer.appendChild(div);
+  });
+}
+
+function getVoice(){
+  const voices = speechSynthesis.getVoices();
+  return voices.find(v=>v.lang==="en-GB") || voices[0];
+}
+
+function speak(text){
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-GB";
+  u.voice = getVoice();
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function playWrong(){
+  const ctx = new (window.AudioContext||window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+
+  o.connect(g);
+  g.connect(ctx.destination);
+
+  o.type="sawtooth";
+  o.frequency.value=180;
+
+  g.gain.value=0.12;
+
+  o.start();
+
+  o.frequency.exponentialRampToValueAtTime(90, ctx.currentTime+0.25);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.25);
+
+  o.stop(ctx.currentTime+0.25);
+}
+
+function playCelebrate(){
+  const ctx = new (window.AudioContext||window.webkitAudioContext)();
+
+  [523,659,784].forEach((freq,i)=>{
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+
+    o.connect(g);
+    g.connect(ctx.destination);
+
+    o.type="triangle";
+    o.frequency.value=freq;
+
+    const t=ctx.currentTime + i*0.12;
+
+    g.gain.setValueAtTime(0.001,t);
+    g.gain.linearRampToValueAtTime(0.15,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.32);
+
+    o.start(t);
+    o.stop(t+0.32);
+  });
+}
+
+function pressLetter(letter){
+
+  if(typed.length >= currentWord().length) return;
+
+  const expected = currentWord()[typed.length];
+
+  if(letter === expected){
+    speak(letter);
+    typed += letter;
+    drawSlots();
+
+    if(typed === currentWord()){
+      setTimeout(()=>{
+        message.textContent = "Great Job! 🎉";
+        message.className = "message correct";
+        playCelebrate();
+      },1000);
+    }
+
+  } else {
+
+    message.textContent = "Try Again 🙂";
+    message.className = "message try";
+
+    setTimeout(()=>{
+      playWrong();
+    },1000);
+
+  }
+}
+
+function drawKeyboard(){
+
+  keyboard.innerHTML = "";
+
+  const rows = [
+    "QWERTYUIOP",
+    "ASDFGHJKL",
+    "ZXCVBNM"
+  ];
+
+  rows.forEach(r=>{
+
+    const row = document.createElement("div");
+    row.className = "keyboard-row";
+
+    r.split("").forEach(letter=>{
+
+      const btn = document.createElement("button");
+      btn.className = "key";
+      btn.textContent = letter;
+
+      btn.onclick = ()=>pressLetter(letter);
+
+      row.appendChild(btn);
+
+    });
+
+    keyboard.appendChild(row);
+
+  });
+
+}
+
+function nextWord(){
+  current = (current + 1) % words.length;
+  typed = "";
+  message.textContent = "";
+  picture.textContent = words[current].picture;
+  drawSlots();
+  speak(currentWord().toLowerCase());
+}
+
+document.getElementById("nextBtn").onclick = nextWord;
+
+document.getElementById("clearBtn").onclick = ()=>{
+  typed = "";
+  message.textContent = "";
+  drawSlots();
+};
+
+document.getElementById("soundBtn").onclick = ()=>{
+  speak(currentWord().toLowerCase());
+};
+
+picture.textContent = words[current].picture;
+
+drawSlots();
+drawKeyboard();
+
+</script>
+
 </body>
 </html>
