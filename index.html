@@ -117,13 +117,21 @@ h1 {
   position: relative;
 }
 
-.slot:empty::after {
+.slot {
+  color: #20242c;
+}
+
+.slot.hint {
+  color: #c6ccd6;
+}
+
+.slot.hint::after {
   content: "";
   position: absolute;
   bottom: clamp(8px, 1.3vw, 12px);
   width: 45%;
   height: 4px;
-  background: #333;
+  background: #d7dce5;
   border-radius: 8px;
 }
 
@@ -229,6 +237,10 @@ button {
     font-size: clamp(70px, 12vw, 126px);
   }
 
+  .picture.two-emoji {
+    font-size: clamp(46px, 8vw, 82px);
+  }
+
   .keyboard {
     max-width: 900px;
   }
@@ -261,6 +273,10 @@ button {
 
   .picture {
     font-size: clamp(62px, 10vw, 105px);
+  }
+
+  .picture.two-emoji {
+    font-size: clamp(42px, 7vw, 72px);
   }
 
   .prompt {
@@ -376,10 +392,10 @@ function currentWord(){
 
 function drawSlots(){
   answer.innerHTML = "";
-  currentWord().split("").forEach((_,i)=>{
+  currentWord().split("").forEach((letter,i)=>{
     const div = document.createElement("div");
-    div.className = "slot";
-    div.textContent = typed[i] || "";
+    div.className = typed[i] ? "slot" : "slot hint";
+    div.textContent = typed[i] || letter;
     answer.appendChild(div);
   });
 }
@@ -510,7 +526,7 @@ function nextWord(){
   current = (current + 1) % words.length;
   typed = "";
   message.textContent = "";
-  picture.textContent = words[current].picture;
+  updatePicture();
   drawSlots();
   speak(currentWord().toLowerCase());
 }
@@ -527,7 +543,12 @@ document.getElementById("soundBtn").onclick = ()=>{
   speak(currentWord().toLowerCase());
 };
 
-picture.textContent = words[current].picture;
+function updatePicture(){
+  picture.textContent = words[current].picture;
+  picture.className = words[current].picture.length > 2 ? "picture two-emoji" : "picture";
+}
+
+updatePicture();
 
 drawSlots();
 drawKeyboard();
