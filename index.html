@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spelling Fun</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <div class="top-row">
+      <button id="soundBtn" class="sound-btn" aria-label="Hear the word">🔊</button>
+      <h1><span>⭐</span> Spelling Fun <span>⭐</span></h1>
+      <div class="score">⭐ <span id="scoreText">1 / 8</span></div>
+    </div>
+
+    <section class="card">
+      <div id="picture" class="picture" aria-label="Object picture">🍎</div>
+      <p class="prompt">Spell the word</p>
+
+      <div id="answerSlots" class="answer-slots" aria-label="Spelling blanks"></div>
+
+      <div id="keyboard" class="keyboard" aria-label="Touch keyboard"></div>
+
+      <p id="message" class="message" aria-live="polite"></p>
+
+      <div class="controls">
+        <button id="clearBtn" class="clear-btn">🗑️ Clear</button>
+        <button id="nextBtn" class="next-btn">➜ Next</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
