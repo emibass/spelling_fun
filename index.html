@@ -6,193 +6,297 @@
 <title>Spelling Fun</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Arial,Helvetica,sans-serif;
-  background:linear-gradient(180deg,#fff6d6,#fffdf7);
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(180deg, #fff6d6, #fffdf7);
 }
 
-body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
+body {
+  overflow: auto;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
-.app{
-  width:100vw;
-  height:100vh;
-  padding:12px;
-  display:flex;
-  flex-direction:column;
+.app {
+  width: 100%;
+  min-height: 100svh;
+  padding: clamp(8px, 1.6vw, 18px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1vw, 12px);
 }
 
-.header{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:12px;
-  margin-bottom:6px;
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 14px);
+  flex-shrink: 0;
 }
 
-h1{
-  margin:0;
-  font-size:52px;
-  color:#ff4d5a;
-  text-shadow:0 2px 0 #fff;
+h1 {
+  margin: 0;
+  font-size: clamp(30px, 5.2vw, 58px);
+  line-height: 1.05;
+  color: #ff4d5a;
+  text-align: center;
+  text-shadow: 0 2px 0 #fff;
 }
 
-.sound-btn{
-  width:68px;
-  height:68px;
-  border:none;
-  border-radius:18px;
-  background:#8d63ff;
-  color:white;
-  font-size:32px;
-  font-weight:bold;
+.sound-btn {
+  width: clamp(48px, 7vw, 70px);
+  height: clamp(48px, 7vw, 70px);
+  border: none;
+  border-radius: clamp(12px, 2vw, 18px);
+  background: #8d63ff;
+  color: white;
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: bold;
+  flex: 0 0 auto;
 }
 
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  gap:10px;
+.main {
+  flex: 1;
+  display: grid;
+  grid-template-rows: auto auto auto auto auto auto;
+  gap: clamp(6px, 1vw, 12px);
+  align-items: center;
 }
 
-.picture-box{
-  width:100%;
-  max-width:420px;
-  margin:0 auto;
-  background:white;
-  border-radius:24px;
-  padding:18px;
-  box-shadow:0 4px 14px rgba(0,0,0,0.12);
+.picture-box {
+  width: min(54vw, 380px);
+  margin: 0 auto;
+  background: white;
+  border-radius: clamp(16px, 2.5vw, 24px);
+  padding: clamp(8px, 1.5vw, 16px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
-.picture{
-  font-size:150px;
-  text-align:center;
+.picture {
+  font-size: clamp(78px, 14vw, 145px);
+  line-height: 1;
+  text-align: center;
 }
 
-.prompt{
-  text-align:center;
-  font-size:34px;
-  font-weight:bold;
-  margin:8px 0;
+.prompt {
+  text-align: center;
+  font-size: clamp(22px, 3.6vw, 36px);
+  font-weight: bold;
+  margin: 0;
 }
 
-.answer{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-  min-height:70px;
+.answer {
+  display: flex;
+  justify-content: center;
+  gap: clamp(5px, 1vw, 10px);
+  flex-wrap: wrap;
+  min-height: clamp(48px, 7vw, 76px);
 }
 
-.slot{
-  width:58px;
-  height:72px;
-  border-radius:16px;
-  background:white;
-  border:4px solid #d9dfeb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:40px;
-  font-weight:bold;
-  position:relative;
+.slot {
+  width: clamp(38px, 6vw, 62px);
+  height: clamp(48px, 7vw, 76px);
+  border-radius: clamp(10px, 1.5vw, 16px);
+  background: white;
+  border: clamp(2px, 0.5vw, 4px) solid #d9dfeb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(26px, 4.5vw, 42px);
+  font-weight: bold;
+  position: relative;
 }
 
-.slot:empty::after{
-  content:"";
-  position:absolute;
-  bottom:12px;
-  width:28px;
-  height:5px;
-  background:#333;
-  border-radius:8px;
+.slot:empty::after {
+  content: "";
+  position: absolute;
+  bottom: clamp(8px, 1.3vw, 12px);
+  width: 45%;
+  height: 4px;
+  background: #333;
+  border-radius: 8px;
 }
 
-.keyboard{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-top:4px;
+.message {
+  text-align: center;
+  font-size: clamp(20px, 3.3vw, 34px);
+  font-weight: bold;
+  min-height: clamp(28px, 4vw, 42px);
+  margin: 0;
 }
 
-.keyboard-row{
-  display:flex;
-  justify-content:center;
-  gap:8px;
+.correct {
+  color: #159c34;
 }
 
-.key{
-  flex:1;
-  max-width:76px;
-  min-height:58px;
-  border:none;
-  border-radius:14px;
-  color:white;
-  font-size:30px;
-  font-weight:bold;
-  box-shadow:inset 0 -4px 0 rgba(0,0,0,0.2);
+.try {
+  color: #e67a00;
 }
 
-.key:nth-child(7n+1){background:#ff5d5d;}
-.key:nth-child(7n+2){background:#ff9838;}
-.key:nth-child(7n+3){background:#ffc93d;}
-.key:nth-child(7n+4){background:#52c95a;}
-.key:nth-child(7n+5){background:#45a2ff;}
-.key:nth-child(7n+6){background:#8a63ff;}
-.key:nth-child(7n){background:#ff69a6;}
-
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:18px;
-  margin-top:6px;
+.keyboard {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(5px, 0.9vw, 9px);
 }
 
-.control-btn{
-  min-width:180px;
-  min-height:64px;
-  border:none;
-  border-radius:18px;
-  color:white;
-  font-size:30px;
-  font-weight:bold;
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(4px, 0.8vw, 8px);
 }
 
-.clear-btn{background:#8a63ff;}
-.next-btn{background:#55c84b;}
-
-.message{
-  text-align:center;
-  font-size:32px;
-  font-weight:bold;
-  min-height:40px;
+.keyboard-row:nth-child(2) {
+  padding-left: min(4vw, 38px);
+  padding-right: min(4vw, 38px);
 }
 
-.correct{color:#159c34;}
-.try{color:#e67a00;}
+.keyboard-row:nth-child(3) {
+  padding-left: min(9vw, 86px);
+  padding-right: min(9vw, 86px);
+}
 
-@media (max-width: 900px){
-  h1{font-size:42px;}
-  .picture{font-size:120px;}
-  .key{
-    min-height:52px;
-    font-size:24px;
+.key {
+  flex: 1 1 0;
+  max-width: 78px;
+  min-width: 0;
+  min-height: clamp(42px, 6.5vw, 62px);
+  border: none;
+  border-radius: clamp(8px, 1.4vw, 14px);
+  color: white;
+  font-size: clamp(20px, 3.5vw, 31px);
+  font-weight: bold;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.key:nth-child(7n+1) { background: #ff5d5d; }
+.key:nth-child(7n+2) { background: #ff9838; }
+.key:nth-child(7n+3) { background: #ffc93d; }
+.key:nth-child(7n+4) { background: #52c95a; }
+.key:nth-child(7n+5) { background: #45a2ff; }
+.key:nth-child(7n+6) { background: #8a63ff; }
+.key:nth-child(7n) { background: #ff69a6; }
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 2vw, 20px);
+  margin: 0;
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.control-btn {
+  min-width: clamp(130px, 20vw, 190px);
+  min-height: clamp(48px, 7vw, 66px);
+  border: none;
+  border-radius: clamp(12px, 2vw, 18px);
+  color: white;
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: bold;
+}
+
+.clear-btn {
+  background: #8a63ff;
+}
+
+.next-btn {
+  background: #55c84b;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+@media (orientation: landscape) {
+  .picture-box {
+    width: min(36vw, 320px);
+  }
+
+  .picture {
+    font-size: clamp(70px, 12vw, 126px);
+  }
+
+  .keyboard {
+    max-width: 900px;
+  }
+
+  .key {
+    min-height: clamp(38px, 6vw, 56px);
+  }
+}
+
+@media (max-height: 760px) {
+  .app {
+    padding: 6px 10px;
+    gap: 4px;
+  }
+
+  h1 {
+    font-size: clamp(28px, 4.6vw, 48px);
+  }
+
+  .sound-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+
+  .picture-box {
+    width: min(40vw, 260px);
+    padding: 8px;
+  }
+
+  .picture {
+    font-size: clamp(62px, 10vw, 105px);
+  }
+
+  .prompt {
+    font-size: clamp(20px, 3vw, 30px);
+  }
+
+  .slot {
+    width: clamp(34px, 5vw, 50px);
+    height: clamp(42px, 6vw, 60px);
+    font-size: clamp(22px, 3.5vw, 34px);
+  }
+
+  .key {
+    min-height: clamp(34px, 5.4vw, 48px);
+    font-size: clamp(18px, 3vw, 26px);
+  }
+
+  .control-btn {
+    min-height: 44px;
+    font-size: clamp(20px, 3vw, 28px);
+  }
+}
+
+@media (max-width: 700px) {
+  .picture-box {
+    width: min(72vw, 340px);
+  }
+
+  .keyboard-row:nth-child(2),
+  .keyboard-row:nth-child(3) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .controls {
+    padding-bottom: 10px;
   }
 }
 
