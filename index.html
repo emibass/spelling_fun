@@ -37,8 +37,8 @@ body {
 }
 
 .header {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: clamp(8px, 1.4vw, 14px);
   flex-shrink: 0;
@@ -53,16 +53,25 @@ h1 {
   text-shadow: 0 2px 0 #fff;
 }
 
-.sound-btn {
+.sound-btn,
+.hint-btn {
   width: clamp(48px, 7vw, 70px);
   height: clamp(48px, 7vw, 70px);
   border: none;
   border-radius: clamp(12px, 2vw, 18px);
-  background: #8d63ff;
   color: white;
   font-size: clamp(24px, 3.4vw, 34px);
   font-weight: bold;
   flex: 0 0 auto;
+}
+
+.sound-btn {
+  background: #8d63ff;
+}
+
+.hint-btn {
+  background: #ffc93d;
+  color: #4a3500;
 }
 
 .main {
@@ -119,6 +128,16 @@ h1 {
 
 .slot {
   color: #20242c;
+}
+
+.slot:empty::after {
+  content: "";
+  position: absolute;
+  bottom: clamp(8px, 1.3vw, 12px);
+  width: 45%;
+  height: 4px;
+  background: #333;
+  border-radius: 8px;
 }
 
 .slot.hint {
@@ -260,7 +279,8 @@ button {
     font-size: clamp(28px, 4.6vw, 48px);
   }
 
-  .sound-btn {
+  .sound-btn,
+  .hint-btn {
     width: 48px;
     height: 48px;
     font-size: 24px;
@@ -326,6 +346,7 @@ button {
   <div class="header">
     <button class="sound-btn" id="soundBtn">🔊</button>
     <h1>⭐ Spelling Fun ⭐</h1>
+    <button class="hint-btn" id="hintBtn" aria-label="Show hint">💡</button>
   </div>
 
   <div class="main">
@@ -378,8 +399,9 @@ const words = [
   { word: "HELMET", picture: "🚴🪖" }
 ];
 
-let current = 0;
+let current = Math.floor(Math.random() * words.length);
 let typed = "";
+let hintIndex = null;
 
 const answer = document.getElementById("answer");
 const keyboard = document.getElementById("keyboard");
@@ -394,8 +416,18 @@ function drawSlots(){
   answer.innerHTML = "";
   currentWord().split("").forEach((letter,i)=>{
     const div = document.createElement("div");
-    div.className = typed[i] ? "slot" : "slot hint";
-    div.textContent = typed[i] || letter;
+
+    if (typed[i]) {
+      div.className = "slot";
+      div.textContent = typed[i];
+    } else if (hintIndex === i) {
+      div.className = "slot hint";
+      div.textContent = letter;
+    } else {
+      div.className = "slot";
+      div.textContent = "";
+    }
+
     answer.appendChild(div);
   });
 }
@@ -467,6 +499,7 @@ function pressLetter(letter){
   if(letter === expected){
     speak(letter);
     typed += letter;
+    hintIndex = null;
     drawSlots();
 
     if(typed === currentWord()){
@@ -523,9 +556,19 @@ function drawKeyboard(){
 }
 
 function nextWord(){
-  current = (current + 1) % words.length;
+  let nextIndex = current;
+
+  if (words.length > 1) {
+    while (nextIndex === current) {
+      nextIndex = Math.floor(Math.random() * words.length);
+    }
+  }
+
+  current = nextIndex;
   typed = "";
+  hintIndex = null;
   message.textContent = "";
+  message.className = "message";
   updatePicture();
   drawSlots();
   speak(currentWord().toLowerCase());
@@ -535,7 +578,9 @@ document.getElementById("nextBtn").onclick = nextWord;
 
 document.getElementById("clearBtn").onclick = ()=>{
   typed = "";
+  hintIndex = null;
   message.textContent = "";
+  message.className = "message";
   drawSlots();
 };
 
@@ -543,10 +588,41 @@ document.getElementById("soundBtn").onclick = ()=>{
   speak(currentWord().toLowerCase());
 };
 
+document.getElementById("hintBtn").onclick = ()=>{
+  if (typed.length < currentWord().length) {
+    hintIndex = typed.length;
+    drawSlots();
+  }
+};
+
 function updatePicture(){
   picture.textContent = words[current].picture;
   picture.className = words[current].picture.length > 2 ? "picture two-emoji" : "picture";
 }
+
+document.addEventListener("keydown", (event) => {
+  const letter = event.key.toUpperCase();
+
+  if (/^[A-Z]$/.test(letter)) {
+    pressLetter(letter);
+  }
+
+  if (event.key === "Backspace") {
+    typed = typed.slice(0, -1);
+    hintIndex = null;
+    message.textContent = "";
+    message.className = "message";
+    drawSlots();
+  }
+
+  if (event.key === " ") {
+    event.preventDefault();
+    if (typed.length < currentWord().length) {
+      hintIndex = typed.length;
+      drawSlots();
+    }
+  }
+});
 
 updatePicture();
 
